@@ -237,6 +237,7 @@ flowchart TD
 | **13** | Built API endpoints and type-safe Server Actions (`recompute`, `ingest`, `createItemAction`) | `src/app/api/jobs/recompute/route.ts`, `src/app/api/scraper/ingest/route.ts`, `src/features/items/actions.ts` | ✅ Done |
 | **14** | Built production presentation UI (Root Layout, Dashboard page, shadcn primitives, Reserve Meter) | `src/app/layout.tsx`, `src/app/page.tsx`, `src/components/ui/`, `src/features/janu-worry/components/` | ✅ Done |
 | **15** | Created automated Vitest property suites covering Money invariants and engine logic | `tests/engines/money-and-engines.test.ts` | ✅ Done |
+| **16** | Locked Part 1 Centralized System Types & Core System Interfaces with full edge-case support | `src/types/index.ts` | ✅ Done |
 
 ---
 
@@ -314,8 +315,8 @@ flowchart TD
 ## 11. Git & Deployment State
 
 - **Current Active Branch:** `dev`
-- **Latest Commit Hash:** `839aec4` (dev), `6b665e7` (main)
-- **Latest Commit Message:** `fix(types): resolve strict TypeScript compliance, generate Prisma client, and pass production build`
+- **Latest Commit Hash:** `7fb6838` (dev), `6b665e7` (main)
+- **Latest Commit Message:** `feat(types): establish centralized system types and core interfaces in src/types/index.ts`
 - **Verification Gates:** Vitest (5/5 passed), TypeScript Strict (`tsc --noEmit` clean), Next.js 15 production build (`next build` clean)
 - **Deployment Target:** Vercel (Production watches `main`, Preview environments watch `dev`)
 - **Last Successful Deploy:** None yet (Initial scaffolding phase)
