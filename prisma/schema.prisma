@@ -1,0 +1,306 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ItemCondition {
+  NEW
+  PRE_OWNED
+}
+
+enum ItemStatus {
+  TRACKING
+  PURCHASED
+  ARCHIVED
+}
+
+enum PriceKind {
+  REGULAR
+  SALE
+  BLACK_FRIDAY
+  CYBER_MONDAY
+  USED_LISTING
+}
+
+enum PromoKind {
+  BLACK_FRIDAY
+  CYBER_MONDAY
+  EASTER
+  MID_YEAR
+  BOXING_DAY
+  CUSTOM
+}
+
+enum ExpenseKind {
+  HOLIDAY_CYCLICAL
+  ESSENTIAL_RECURRING
+  DISCRETIONARY
+}
+
+enum PlanStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+}
+
+enum ReserveEventType {
+  LOCK
+  ADJUST
+  OVERRIDE_REQUESTED
+  OVERRIDE_APPROVED
+  OVERRIDE_DENIED
+  RELEASE
+}
+
+enum EngineKind {
+  PRICE_STATS
+  SEASONAL_BASELINE
+  JANUARY_OUTLOOK
+  THRESHOLD_ASSESSMENT
+}
+
+enum RiskSeverity {
+  INFO
+  LOW
+  MEDIUM
+  HIGH
+  BLOCK
+}
+
+enum Recommendation {
+  BUY_NOW
+  WAIT_FOR_SALE
+  WAIT_FOR_NOVEMBER
+  INSUFFICIENT_DATA
+}
+
+model Profile {
+  id        String   @id @db.Uuid
+  name      String?
+  currency  String   @default("ZAR") @db.Char(3)
+  timezone  String   @default("Africa/Johannesburg")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  stores            Store[]
+  items             Item[]
+  categories        ExpenseCategory[]
+  seasonalExpenses  SeasonalExpense[]
+  baselines         SeasonalBaseline[]
+  plans             BudgetPlan[]
+  spendEntries      SpendEntry[]
+  thresholdPolicies ThresholdPolicy[]
+  engineRuns        EngineRun[]
+  assessments       RiskAssessment[]
+
+  @@map("profiles")
+}
+
+model Store {
+  id     String  @id @default(uuid()) @db.Uuid
+  userId String  @map("user_id") @db.Uuid
+  name   String
+  user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prices PricePoint[]
+
+  @@unique([userId, name])
+  @@map("stores")
+}
+
+model Item {
+  id           String        @id @default(uuid()) @db.Uuid
+  userId       String        @map("user_id") @db.Uuid
+  name         String
+  category     String?
+  condition    ItemCondition @default(NEW)
+  targetCents  BigInt?       @map("target_cents")
+  ceilingCents BigInt?       @map("ceiling_cents")
+  status       ItemStatus    @default(TRACKING)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  user         Profile       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prices       PricePoint[]
+  policies     ThresholdPolicy[]
+  assessments  RiskAssessment[]
+  spend        SpendEntry[]
+
+  @@index([userId, status])
+  @@map("items")
+}
+
+model PricePoint {
+  id         String    @id @default(uuid()) @db.Uuid
+  itemId     String    @map("item_id") @db.Uuid
+  storeId    String?   @map("store_id") @db.Uuid
+  observedOn DateTime  @map("observed_on") @db.Date
+  priceCents BigInt    @map("price_cents")
+  kind       PriceKind @default(REGULAR)
+  isAnomaly  Boolean   @default(false) @map("is_anomaly")
+  note       String?
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  item       Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  store      Store?    @relation(fields: [storeId], references: [id], onDelete: SetNull)
+
+  @@index([itemId, observedOn])
+  @@map("price_points")
+}
+
+model PromoWindow {
+  id       String    @id @default(uuid()) @db.Uuid
+  kind     PromoKind
+  year     Int
+  startsOn DateTime  @map("starts_on") @db.Date
+  endsOn   DateTime  @map("ends_on") @db.Date
+
+  @@unique([kind, year])
+  @@map("promo_windows")
+}
+
+model ExpenseCategory {
+  id        String      @id @default(uuid()) @db.Uuid
+  userId    String      @map("user_id") @db.Uuid
+  name      String
+  kind      ExpenseKind
+  user      Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  seasonal  SeasonalExpense[]
+  baselines SeasonalBaseline[]
+  spend     SpendEntry[]
+
+  @@unique([userId, name])
+  @@map("expense_categories")
+}
+
+model SeasonalExpense {
+  id          String          @id @default(uuid()) @db.Uuid
+  userId      String          @map("user_id") @db.Uuid
+  categoryId  String          @map("category_id") @db.Uuid
+  year        Int
+  month       Int             @db.SmallInt
+  amountCents BigInt          @map("amount_cents")
+  note        String?
+  user        Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    ExpenseCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, categoryId, year, month])
+  @@index([userId, year, month])
+  @@map("seasonal_expenses")
+}
+
+model SeasonalBaseline {
+  id            String          @id @default(uuid()) @db.Uuid
+  userId        String          @map("user_id") @db.Uuid
+  categoryId    String          @map("category_id") @db.Uuid
+  month         Int             @db.SmallInt
+  minCents      BigInt          @map("min_cents")
+  avgCents      BigInt          @map("avg_cents")
+  maxCents      BigInt          @map("max_cents")
+  sampleYears   Int             @map("sample_years")
+  engineVersion String          @map("engine_version")
+  computedAt    DateTime        @default(now()) @map("computed_at") @db.Timestamptz
+  user          Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category      ExpenseCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryId, month])
+  @@map("seasonal_baselines")
+}
+
+model BudgetPlan {
+  id           String     @id @default(uuid()) @db.Uuid
+  userId       String     @map("user_id") @db.Uuid
+  year         Int
+  status       PlanStatus @default(DRAFT)
+  poolCents    BigInt     @map("pool_cents")
+  reserveCents BigInt     @map("reserve_cents")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  user         Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ledger       ReserveLedgerEntry[]
+  spend        SpendEntry[]
+
+  @@unique([userId, year])
+  @@map("budget_plans")
+}
+
+model ReserveLedgerEntry {
+  id          String           @id @default(uuid()) @db.Uuid
+  planId      String           @map("plan_id") @db.Uuid
+  type        ReserveEventType
+  deltaCents  BigInt           @map("delta_cents")
+  reason      String?
+  availableAt DateTime?        @map("available_at") @db.Timestamptz
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  plan        BudgetPlan       @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  @@index([planId, createdAt])
+  @@map("reserve_ledger")
+}
+
+model SpendEntry {
+  id          String           @id @default(uuid()) @db.Uuid
+  userId      String           @map("user_id") @db.Uuid
+  planId      String           @map("plan_id") @db.Uuid
+  categoryId  String?          @map("category_id") @db.Uuid
+  itemId      String?          @map("item_id") @db.Uuid
+  occurredOn  DateTime         @map("occurred_on") @db.Date
+  amountCents BigInt           @map("amount_cents")
+  note        String?
+  user        Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan        BudgetPlan       @relation(fields: [planId], references: [id], onDelete: Cascade)
+  category    ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  item        Item?            @relation(fields: [itemId], references: [id], onDelete: SetNull)
+
+  @@index([planId, occurredOn])
+  @@map("spend_entries")
+}
+
+model ThresholdPolicy {
+  id               String  @id @default(uuid()) @db.Uuid
+  userId           String  @map("user_id") @db.Uuid
+  itemId           String? @map("item_id") @db.Uuid
+  lookbackYears    Int     @default(5) @map("lookback_years")
+  warnBps          Int     @default(500) @map("warn_bps")
+  blockBps         Int     @default(2000) @map("block_bps")
+  minSamples       Int     @default(6) @map("min_samples")
+  excludeAnomalies Boolean @default(true) @map("exclude_anomalies")
+  user             Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item             Item?   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
+  @@map("threshold_policies")
+}
+
+model EngineRun {
+  id            String     @id @default(uuid()) @db.Uuid
+  userId        String     @map("user_id") @db.Uuid
+  kind          EngineKind
+  subjectKey    String     @map("subject_key")
+  inputHash     String     @map("input_hash")
+  engineVersion String     @map("engine_version")
+  output        Json
+  computedAt    DateTime   @default(now()) @map("computed_at") @db.Timestamptz
+  user          Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, kind, subjectKey, inputHash, engineVersion])
+  @@index([userId, kind, computedAt])
+  @@map("engine_runs")
+}
+
+model RiskAssessment {
+  id             String         @id @default(uuid()) @db.Uuid
+  userId         String         @map("user_id") @db.Uuid
+  itemId         String         @map("item_id") @db.Uuid
+  candidateCents BigInt         @map("candidate_cents")
+  severity       RiskSeverity
+  recommendation Recommendation
+  reasonCodes    String[]       @map("reason_codes")
+  engineRunId    String?        @map("engine_run_id") @db.Uuid
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  acknowledgedAt DateTime?      @map("acknowledged_at") @db.Timestamptz
+  user           Profile        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item           Item           @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([userId, itemId, createdAt])
+  @@map("risk_assessments")
+}

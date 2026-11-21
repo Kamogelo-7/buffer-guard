@@ -1,0 +1,7 @@
+export const ENGINE_VERSIONS = {
+  PRICE_STATS: "1.0.0",
+  SEASONAL_BASELINE: "1.0.0",
+  SPEND_VELOCITY: "1.0.0",
+  JANUARY_OUTLOOK: "1.0.0",
+  THRESHOLD_GUARD: "1.0.0",
+} as const;
