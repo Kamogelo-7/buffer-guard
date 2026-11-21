@@ -288,8 +288,8 @@ flowchart TD
 ## 10. Git & Deployment State
 
 - **Current Active Branch:** `dev`
-- **Latest Commit Hash:** `6b665e7`
-- **Latest Commit Message:** `chore(init): initialize buffer-guard project structure and architecture blueprint`
+- **Latest Commit Hash:** `fa7ea35` (dev), `6b665e7` (main)
+- **Latest Commit Message:** `docs: establish persistent living task memory document`
 - **Deployment Target:** Vercel (Production watches `main`, Preview environments watch `dev`)
 - **Last Successful Deploy:** None yet (Initial scaffolding phase)
 - **Pending Merges / Pull Requests:** None
