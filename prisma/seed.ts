@@ -1,4 +1,4 @@
-import { PrismaClient, PromoKind, ExpenseKind } from "@prisma/client";
+import { PrismaClient, PromoKind } from "@prisma/client";
 
 const prisma = new PrismaClient();
 

@@ -153,7 +153,7 @@ export function sum(values: readonly Money[]): Money {
   for (const v of values) {
     total += v.cents;
   }
-  return new Money(total);
+  return Money.fromCents(total);
 }
 
 export function medianOf(values: readonly Money[]): Result<Money> {
@@ -167,7 +167,7 @@ export function medianOf(values: readonly Money[]): Result<Money> {
   }
   const low = sorted[mid - 1]!;
   const high = sorted[mid]!;
-  return ok(new Money((low.cents + high.cents) / 2n));
+  return ok(Money.fromCents((low.cents + high.cents) / 2n));
 }
 
 export function meanOf(values: readonly Money[], mode: RoundingMode = "HALF_EVEN"): Result<Money> {

@@ -1,4 +1,4 @@
-import { Money, makeBps, medianOf, meanOf, sum, Bps } from "../../domain/money/money";
+import { Money, makeBps, medianOf, meanOf, Bps } from "../../domain/money/money";
 import {
   IsoDate,
   PricePointInput,
@@ -133,11 +133,19 @@ export function computePriceStats(input: PriceStatsInput): Result<EngineOutput<P
     const yrRegs = yrPts.filter((p) => p.kind === "REGULAR").map((p) => p.price);
     const yrBf = yrPts.filter(isBlackFriday).map((p) => p.price).sort((a, b) => a.compare(b));
 
+    let regularMedian: Money | null = null;
+    if (yrRegs.length > 0) {
+      const regRes = medianOf(yrRegs);
+      if (regRes.ok) {
+        regularMedian = regRes.value;
+      }
+    }
+
     byYear.push({
       year: yr,
       low: yrPrices[0]!,
       high: yrPrices[yrPrices.length - 1]!,
-      regularMedian: yrRegs.length > 0 ? (medianOf(yrRegs).ok ? medianOf(yrRegs).value : null) : null,
+      regularMedian,
       blackFridayLow: yrBf[0] ?? null,
     });
   }

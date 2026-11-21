@@ -78,9 +78,6 @@ export function evaluateThresholdGuard(input: ThresholdGuardInput): Result<Engin
 
   // 4. Deviation vs Historical Range
   let vsMaxBps: Bps | null = null;
-  let vsMinBps: Bps | null = null;
-  let vsMedianBps: Bps | null = null;
-  let vsBlackFridayLowBps: Bps | null = null;
 
   if (candidate.price.cents > stats.range.max.cents) {
     const diff = candidate.price.sub(stats.range.max);
@@ -120,13 +117,13 @@ export function evaluateThresholdGuard(input: ThresholdGuardInput): Result<Engin
       expectedSavingIfWait = savingEst;
     }
   } else if (stats.saleDrop.avgBps && stats.saleDrop.avgBps > 500) {
-    if (recommendation !== "WAIT_FOR_NOVEMBER" && severity !== "BLOCK") {
+    if (severity !== "HIGH") {
       recommendation = "WAIT_FOR_SALE";
     }
   }
 
   // If item is below user target and not blocked
-  if (item.target && candidate.price.cents <= item.target.cents && severity !== "BLOCK" && severity !== "HIGH") {
+  if (item.target && candidate.price.cents <= item.target.cents && severity !== "HIGH") {
     recommendation = "BUY_NOW";
   }
 

@@ -7,7 +7,7 @@ import { evaluateThresholdGuard } from "../engines/threshold-guard";
 import { aiAdvisoryService } from "./ai-advisory.service";
 import { defaultClock } from "../lib/time/clock";
 import { Money } from "../domain/money/money";
-import { Result, ok, err, AppError } from "../domain/errors/result";
+import { Result, ok, err } from "../domain/errors/result";
 import { RiskAssessmentPayload, PriceStatsPayload, JanuaryOutlookPayload } from "../domain/types";
 
 export interface EvaluationOutcome {

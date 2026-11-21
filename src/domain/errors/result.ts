@@ -14,9 +14,9 @@ export type ErrorCode =
 export class AppError extends Error {
   constructor(
     readonly code: ErrorCode,
-    message: string,
+    override readonly message: string,
     readonly retryable: boolean = false,
-    readonly cause?: unknown
+    override readonly cause?: unknown
   ) {
     super(message);
     this.name = "AppError";

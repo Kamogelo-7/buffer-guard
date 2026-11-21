@@ -1,4 +1,4 @@
-import { Money, sum } from "../../domain/money/money";
+import { Money } from "../../domain/money/money";
 import {
   IsoDate,
   SpendEntryInput,
@@ -9,7 +9,7 @@ import {
   EngineOutput,
   EngineWarning,
 } from "../../domain/types";
-import { Result, ok, err, AppError } from "../../domain/errors/result";
+import { Result, ok, err } from "../../domain/errors/result";
 import { computeSpendVelocity } from "../spend-velocity";
 import { ENGINE_VERSIONS } from "../version";
 
@@ -129,7 +129,6 @@ export function evaluateSpendGate(outlook: JanuaryOutlookPayload, amount: Money)
   }
 
   const remainingAfter = outlook.remainingSpendable.sub(amount);
-  const expectedNovDecAvg = outlook.scenarios[1].projectedNovDec;
 
   if (remainingAfter.cents < 0n) {
     return {

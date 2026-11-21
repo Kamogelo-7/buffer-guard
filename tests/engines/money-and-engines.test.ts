@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Money, medianOf, meanOf, makeBps } from "../../src/domain/money/money";
+import { Money, medianOf, meanOf } from "../../src/domain/money/money";
 import { computePriceStats } from "../../src/engines/price-stats";
 import { computeJanuaryOutlook } from "../../src/engines/january-outlook";
 import { PricePointInput, PromoWindowInput } from "../../src/domain/types";
@@ -14,7 +14,8 @@ describe("Domain: Money Primitive Invariants", () => {
     if (p1.ok && p2.ok) {
       const sum = p1.value.add(p2.value);
       expect(sum.cents).toBe(200000n);
-      expect(sum.format()).toBe("R 2,000.00");
+      // en-ZA locale formats with non-breaking space (or standard space)
+      expect(sum.format().replace(/\s/g, " ")).toBe("R 2 000.00");
     }
   });
 

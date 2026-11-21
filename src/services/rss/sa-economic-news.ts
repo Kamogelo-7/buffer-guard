@@ -1,4 +1,3 @@
-import Parser from "rss-parser";
 import { Result, ok, err, AppError } from "../../domain/errors/result";
 
 export interface EconomicNewsArticle {
@@ -14,8 +13,6 @@ export interface EconomicNewsArticle {
  * Identifies inflation and consumer retail sentiment trends.
  */
 export class SaEconomicNewsService {
-  private parser = new Parser();
-
   async fetchMacroeconomicFeed(): Promise<Result<readonly EconomicNewsArticle[]>> {
     try {
       // Standard feeds monitoring SA CPI and retail sales

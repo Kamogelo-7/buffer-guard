@@ -5,7 +5,7 @@ import { CreateItemSchema, LogPricePointSchema } from "../../domain/schemas";
 import { itemRepository } from "../../repositories/item.repository";
 import { pricePointRepository } from "../../repositories/price-point.repository";
 import { Money } from "../../domain/money/money";
-import { ok, err } from "../../domain/errors/result";
+import { err } from "../../domain/errors/result";
 
 export const createItemAction = createAction({
   name: "createItem",
@@ -20,10 +20,10 @@ export const createItemAction = createAction({
 
     return itemRepository.create(ctx.userId, {
       name: input.name,
-      category: input.category,
+      ...(input.category !== undefined ? { category: input.category } : {}),
       condition: input.condition,
-      targetPrice: targetPrice?.value,
-      ceilingPrice: ceilingPrice?.value,
+      ...(targetPrice !== null ? { targetPrice: targetPrice.value } : {}),
+      ...(ceilingPrice !== null ? { ceilingPrice: ceilingPrice.value } : {}),
     });
   },
 });
@@ -42,7 +42,7 @@ export const logPricePointAction = createAction({
         price: priceRes.value,
         kind: input.kind,
         isAnomaly: input.isAnomaly,
-        note: input.note,
+        ...(input.note !== undefined ? { note: input.note } : {}),
       },
     ]);
   },
