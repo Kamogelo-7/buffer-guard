@@ -8,3 +8,9 @@ dist/
 .env.production
 *.log
 *.tsbuildinfo
+.agent
+.claude
+.gemini
+.openai
+.cursor
+.codex

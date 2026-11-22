@@ -252,6 +252,7 @@ flowchart TD
 | **14** | Built production presentation UI (Root Layout, Dashboard page, shadcn primitives, Reserve Meter) | `src/app/layout.tsx`, `src/app/page.tsx`, `src/components/ui/`, `src/features/janu-worry/components/` | ✅ Done |
 | **15** | Created automated Vitest property suites covering Money invariants and engine logic | `tests/engines/money-and-engines.test.ts` | ✅ Done |
 | **16** | Locked Part 1 Centralized System Types & Core System Interfaces with full edge-case support | `src/types/index.ts` | ✅ Done |
+| **17** | Synced Prisma schema with live Supabase PostgreSQL, installed append-only reserve trigger, and seeded 2020–2026 Black Friday promo windows | `prisma/apply-hardening.ts`, `prisma/seed.ts` | ✅ Done |
 
 ---
 
@@ -270,7 +271,7 @@ flowchart TD
 | ~~**T-09**~~ | ~~Build Next.js UI features (Dashboard, Item Tracker, Reserve Meter)~~ | 🟡 Medium | ✅ **Done** |
 | ~~**T-10**~~ | ~~Integrate Gemini 1.5 Flash AI context window generator for natural-language spending advisory~~ | 🟢 Low | ✅ **Done** |
 | ~~**T-11**~~ | ~~Configure Vercel Cron recompute route with `CRON_SECRET` protection~~ | 🟢 Low | ✅ **Done** |
-| **T-12** | Run Prisma Client generation and database migration against live Supabase instance | 🔴 High | Awaiting active Supabase connection credentials |
+| ~~**T-12**~~ | ~~Run Prisma Client generation and database migration against live Supabase instance~~ | 🔴 High | ✅ **Done** (Database synced, triggers installed, promo windows seeded) |
 | **T-13** | Connect live retailer URLs for background scraping scheduler | 🟡 Medium | Ready for integration testing |
 
 ---
@@ -329,8 +330,8 @@ flowchart TD
 ## 11. Git & Deployment State
 
 - **Current Active Branch:** `dev`
-- **Latest Commit Hash:** `7fb6838` (dev), `6b665e7` (main)
-- **Latest Commit Message:** `feat(types): establish centralized system types and core interfaces in src/types/index.ts`
+- **Latest Commit Hash:** `27c25f9` (dev), `6b665e7` (main)
+- **Latest Commit Message:** `feat(db): add automated hardening script and apply RLS and immutable triggers to Supabase`
 - **Verification Gates:** Vitest (5/5 passed), TypeScript Strict (`tsc --noEmit` clean), Next.js 15 production build (`next build` clean)
 - **Deployment Target:** Vercel (Production watches `main`, Preview environments watch `dev`)
 - **Last Successful Deploy:** None yet (Initial scaffolding phase)
