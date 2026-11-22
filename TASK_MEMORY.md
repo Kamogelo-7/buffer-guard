@@ -29,6 +29,20 @@
 > 3. **Push Policy:** Only push to remote repositories when explicitly instructed by the user.
 > 4. **Pre-Commit Verification:** Linting (`eslint-plugin-boundaries`), type checking (`tsc --noEmit`), and engine unit tests must pass cleanly before merge.
 
+### Design System & UI Direction (Premium SaaS)
+> [!NOTE]
+> **Approved Visual Direction (Dribbble/Linear/Stripe Inspired):**
+> - **Color Theme:** High-contrast White, Obsidian Black (`#090D16`), and Royal/Electric Blue (`#2563EB` / `#0066FF`), with semantic status accents (Emerald for Reserve Safe, Amber for Wait for Nov, Crimson for Breach Block).
+> - **Typography:**
+>   - **Body & UI Elements:** `Inter` (neutral, high legibility)
+>   - **Headings (H1, H2):** `Space Grotesk` (clean, technical punch) / `Clash Display`
+>   - **Currency & Metric Values:** Tabular Mono (`font-mono tabular-nums`) for aligned financial decimals.
+> - **Component & Motion Ecosystem:**
+>   - **shadcn/ui + Tailwind CSS:** Core accessible UI primitives.
+>   - **Framer Motion:** Micro-interactions, animated metric tickers, and layout shifts.
+>   - **Tremor / Recharts Concepts:** Minimalist area charts for 5-year price curves and daily spend velocity burn rates.
+>   - **Magic UI Concepts:** Subtle ambient borders, interactive bento-grid cards, and high-visibility status badges.
+
 ---
 
 ## 2. Architecture Snapshot
