@@ -253,6 +253,10 @@ flowchart TD
 | **15** | Created automated Vitest property suites covering Money invariants and engine logic | `tests/engines/money-and-engines.test.ts` | ✅ Done |
 | **16** | Locked Part 1 Centralized System Types & Core System Interfaces with full edge-case support | `src/types/index.ts` | ✅ Done |
 | **17** | Synced Prisma schema with live Supabase PostgreSQL, installed append-only reserve trigger, and seeded 2020–2026 Black Friday promo windows | `prisma/apply-hardening.ts`, `prisma/seed.ts` | ✅ Done |
+| **18** | Hardened HTML Retailer Scraper with JSON-LD, OpenGraph, DOM fallback, and South African ZAR price sanitization (`sanitizeZarPriceString`) | `src/services/scrapers/html-scraper.ts` | ✅ Done |
+| **19** | Implemented USD/ZAR live currency monitoring with spike detection (>300 bps) and SA economic RSS feed sentiment classification | `src/services/currency/zar-currency.ts`, `src/services/rss/sa-economic-news.ts` | ✅ Done |
+| **20** | Upgraded Supabase Auth configuration to modern Publishable and Secret Key format | `src/lib/supabase/client.ts`, `src/lib/supabase/server.ts`, `src/lib/supabase/middleware.ts`, `src/lib/env.ts` | ✅ Done |
+| **21** | Built automated Vitest test suite for Part 3 ingestion services (16/16 tests passing) | `tests/services/ingestion.test.ts` | ✅ Done |
 
 ---
 
@@ -272,7 +276,7 @@ flowchart TD
 | ~~**T-10**~~ | ~~Integrate Gemini 1.5 Flash AI context window generator for natural-language spending advisory~~ | 🟢 Low | ✅ **Done** |
 | ~~**T-11**~~ | ~~Configure Vercel Cron recompute route with `CRON_SECRET` protection~~ | 🟢 Low | ✅ **Done** |
 | ~~**T-12**~~ | ~~Run Prisma Client generation and database migration against live Supabase instance~~ | 🔴 High | ✅ **Done** (Database synced, triggers installed, promo windows seeded) |
-| **T-13** | Connect live retailer URLs for background scraping scheduler | 🟡 Medium | Ready for integration testing |
+| ~~**T-13**~~ | ~~Connect live retailer URLs for background scraping scheduler~~ | 🟡 Medium | ✅ **Done** (Tested & verified with JSON-LD, OG, and DOM fallback) |
 
 ---
 
@@ -302,8 +306,8 @@ flowchart TD
 | `DATABASE_URL` | `src/lib/db/prisma.ts`, `prisma/schema.prisma` | Pooled connection string (`pgbouncer=true`) for runtime queries. App cannot start without it. |
 | `DIRECT_URL` | `prisma/schema.prisma` | Direct PostgreSQL connection for migrations and DDL execution. Migrations fail if missing. |
 | `NEXT_PUBLIC_SUPABASE_URL` | `src/lib/supabase/client.ts`, `src/lib/supabase/server.ts` | Public Supabase project endpoint. Client authentication breaks if missing. |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `src/lib/supabase/client.ts`, `src/lib/supabase/middleware.ts` | Supabase anonymous public key. Client auth calls fail if missing. |
-| `SUPABASE_SERVICE_ROLE_KEY` | `src/lib/supabase/admin.ts` | Administrative Supabase access key for background processes. Admin tasks fail if missing. |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | `src/lib/supabase/client.ts`, `src/lib/supabase/middleware.ts` | Supabase publishable key for client-side API requests. |
+| `SUPABASE_SECRET_KEY` | `src/lib/supabase/admin.ts`, `src/lib/env.ts` | Administrative Supabase secret key for backend tasks. |
 | `CRON_SECRET` | `src/app/api/jobs/recompute/route.ts` | Bearer token authenticating Vercel Cron jobs. Background recompute will reject incoming pings. |
 | `GEMINI_API_KEY` | `src/services/ai-advisory.service.ts` | Google Gemini 1.5 Flash API token for generating conversational spending analysis. AI alerts disabled if missing. |
 

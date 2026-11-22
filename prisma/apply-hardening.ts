@@ -1,27 +1,21 @@
 import { PrismaClient } from "@prisma/client";
-import fs from "fs";
-import path from "path";
 
 // Connect directly to port 5432 for DDL operations
 const directUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: directUrl,
-    },
-  },
-});
+const prisma = new PrismaClient(
+  directUrl
+    ? {
+        datasources: {
+          db: {
+            url: directUrl,
+          },
+        },
+      }
+    : undefined
+);
 
 async function main() {
   console.log("Applying custom hardening constraints, triggers, and RLS policies on direct port...");
-  const sqlPath = path.join(__dirname, "migrations/000000000000_init_hardening/migration.sql");
-  const sql = fs.readFileSync(sqlPath, "utf-8");
-
-  // Remove full line comments
-  const cleanSql = sql
-    .split("\n")
-    .filter((line) => !line.trim().startsWith("--"))
-    .join("\n");
 
   // Separate functions/triggers block from normal commands
   // First, apply reject_mutation function and trigger
