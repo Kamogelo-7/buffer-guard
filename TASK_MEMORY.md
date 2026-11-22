@@ -334,9 +334,9 @@ flowchart TD
 ## 11. Git & Deployment State
 
 - **Current Active Branch:** `dev`
-- **Latest Commit Hash:** `27c25f9` (dev), `6b665e7` (main)
-- **Latest Commit Message:** `feat(db): add automated hardening script and apply RLS and immutable triggers to Supabase`
-- **Verification Gates:** Vitest (5/5 passed), TypeScript Strict (`tsc --noEmit` clean), Next.js 15 production build (`next build` clean)
+- **Latest Commit Hash:** `ce9f008` (dev), `6b665e7` (main)
+- **Latest Commit Message:** `feat(ingest): implement resilient SA retail price scraper, ZAR currency tracker, and RSS feeds`
+- **Verification Gates:** Vitest (16/16 passed), TypeScript Strict (`tsc --noEmit` clean), Next.js 15 production build (`next build` clean)
 - **Deployment Target:** Vercel (Production watches `main`, Preview environments watch `dev`)
 - **Last Successful Deploy:** None yet (Initial scaffolding phase)
 - **Pending Merges / Pull Requests:** None
